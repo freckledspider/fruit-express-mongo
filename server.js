@@ -23,4 +23,8 @@ app.use(express.static('public'))
 app.use('/fruits', FruitRouter)
 app.use("/user", UserRouter)
 
+app.get("/", (req, res) => {
+    res.render("index.ejs")
+  });
+  
 app.listen(PORT, ()=> console.log(`Who let the dogs out on port: ${PORT}`))
