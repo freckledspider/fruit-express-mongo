@@ -4,6 +4,7 @@ const morgan = require('morgan') // nice logger for our request
 const methodOverride = require('method-override') // allows us to override post request from our ejs/forms
 const PORT = process.env.PORT
 const FruitRouter = require('./controllers/fruit')
+const UserRouter = require("./controllers/user")
 
 const app = express()
 
@@ -20,5 +21,6 @@ app.use(express.static('public'))
 // app.get('/store', storeRoutes)
 // app.get('/user', userRoutes)
 app.use('/fruits', FruitRouter)
+app.use("/user", UserRouter)
 
 app.listen(PORT, ()=> console.log(`Who let the dogs out on port: ${PORT}`))
