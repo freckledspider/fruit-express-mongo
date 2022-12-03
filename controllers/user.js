@@ -24,9 +24,11 @@ router.get("/signup", (req, res) => {
 // })
 
 router.post("/signup", async (req, res) => {
+    // encrypt password
     req.body.password = await bcrypt.hash(req.body.password, await bcrypt.genSalt(10))
-
+    // create the new user
     User.create(req.body, (err, user) => {
+        //redirect to login page
         res.redirect("/user/login")
     })
 })
@@ -37,29 +39,25 @@ router.get("/login", (req, res) => {
 })
 
 router.post("/login", (req, res) => {
-    const { username, password } = req.body;
-    //can also say req.body.username where we see username
-    //same w/ password. we can say req.body.password
-
-    User.findOne({ username }, (err, user) => {
-        if (!user) {
-            res.send("user doesnt exist");
+    const { username, password } = req.body
+    User.findOne({ username}, (err, user) => {
+        if(!user) {
+            res.send("User doesn't exist.")
         } else {
-            const result = bcrypt.compareSync(password, user.password);
-            if (result) {
-                res.redirect("/fruits");
-            } else {
-
-                res.render("user/login.ejs", {data: 'wrong pass'});
-                // res.send("wrong password");
+            const result = bcrypt.compareSync(password, user.password)
+            if(result){
+                req.session.username = username
+                req.session.loggedIn = true
+                res.redirect("/fruits")
+            }else {
+                res.send("Wrong password.")
             }
         }
-    });
-});
+    })
+})
 
 router.get("/logout", (req, res) => {
-    // destroy session and redirect to main page
-    req.session.destroy((err) => {
+    req.session.destroy(err => {
         res.redirect("/")
     })
 })
